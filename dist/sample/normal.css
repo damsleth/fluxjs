@@ -1,7 +1,10 @@
-*{font-family:"Helvetica","Segoe UI", "Sans-serif";
-color:#333;
-background-color:#eeeeee;
+* {
+    font-family: "Helvetica", "Segoe UI", "Sans-serif";
+    color: #333;
+    background-color: #CCC;
 }
-body{
-padding:20px;
+
+body {
+    padding: 20px;
+    display:none;
 }

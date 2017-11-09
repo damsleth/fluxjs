@@ -1,0 +1,26 @@
+{
+  "name": "fluxjs",
+  "version": "1.0.0",
+  "description": "day and nightmode for your website",
+  "main": "./dist/sample/sample.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/damsleth/fluxjs.git"
+  },
+  "author": "damsleth",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/damsleth/fluxjs/issues"
+  },
+  "homepage": "https://github.com/damsleth/fluxjs#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^3.2.3",
+    "gulp-util": "^3.0.8",
+    "typescript": "^2.6.1",
+    "watchify": "^3.9.0"
+  }
+}
