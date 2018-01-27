@@ -20,7 +20,6 @@
     "gulp": "^3.9.1",
     "gulp-typescript": "^3.2.3",
     "gulp-util": "^3.0.8",
-    "typescript": "^2.6.1",
-    "watchify": "^3.9.0"
+    "typescript": "^2.6.1"
   }
 }

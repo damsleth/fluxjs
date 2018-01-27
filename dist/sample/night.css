@@ -2,3 +2,8 @@
     background-color: #000000;
     color: #cccccc;
 }
+
+body{
+    opacity: 1;
+    display: block;
+}

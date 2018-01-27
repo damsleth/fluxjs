@@ -1,22 +1,24 @@
-interface Date {
-    sunrise(latitude: number, longitude: number, zenith?: number): any;
-    sunset(latitude: number, longitude: number, zenith?: number): any;
-    sunriseSet(latitude: number, longitude: number, sunrise: boolean, zenith?: number): any;
-    getDayOfYear(): number;
-}
+export { };
+declare global {
+    interface Date {
+        sunrise(latitude: number, longitude: number, zenith?: number): any;
+        sunset(latitude: number, longitude: number, zenith?: number): any;
+        sunriseSet(latitude: number, longitude: number, sunrise: boolean, zenith?: number): any;
+        getDayOfYear(): number;
+    }
 
-interface Math {
-    degToRad(num: number): number;
-    radToDeg(num: number): number;
-    sinDeg(num: number): number;
-    acosDeg(num: number): number;
-    asinDeg(num: number): number;
-    tanDeg(num: number): number;
-    cosDeg(num: number): number;
-    degToRad(num: number): number;
-    mod(a: number, b: number): number;
+    interface Math {
+        degToRad(num: number): number;
+        radToDeg(num: number): number;
+        sinDeg(num: number): number;
+        acosDeg(num: number): number;
+        asinDeg(num: number): number;
+        tanDeg(num: number): number;
+        cosDeg(num: number): number;
+        degToRad(num: number): number;
+        mod(a: number, b: number): number;
+    }
 }
-
 const DATE_DEGREES_PER_HOUR = (360 / 24);
 
 Date.prototype.sunrise = function (latitude, longitude, zenith) {
@@ -81,7 +83,10 @@ Date.prototype.sunriseSet = function (latitude, longitude, sunrise, zenith) {
     const milli = midnight.getTime() + (time * 60 * 60 * 1000);
     return new Date(milli);
 }
+
+
 // Utility functions
+
 Date.prototype.getDayOfYear = function () {
     const onejan: number = new Date(this.getFullYear(), 0, 1).getTime();
     return Math.ceil((this.getTime() - onejan) / 86400000);
@@ -105,36 +110,4 @@ Math.mod = function (a, b) {
     let result = a % b;
     if (result < 0) { result += b; }
     return result;
-}
-
-const DAY_MODE_CSS = "day.css";
-const NIGHT_MODE_CSS = "night.css";
-
-module CJD.Flux {
-    export let GetLocationSoft = () => fetch("//freegeoip.net/json/", { method: "GET" }).then(d => d.json().then(j => j))
-    export let GetSunRise = (loc: { latitude: string, longitude: string }) => new Date().sunrise(parseInt(loc.latitude), parseInt(loc.longitude))
-    export let GetSunSet = (loc: { latitude: string, longitude: string }) => new Date().sunset(parseInt(loc.latitude), parseInt(loc.longitude))
-
-    const currentTime = () => new Date().getTime()
-
-    const ApplyCSS = (url: string) => {
-        const cssLink: HTMLLinkElement = document.createElement("link")
-        cssLink.rel = "stylesheet"
-        cssLink.type = "text/css"
-        cssLink.href = url
-        document.head.appendChild(cssLink)
-    }
-
-
-    export let init = () => {
-        GetLocationSoft().then(function (loc: { latitude: string, longitude: string }) {
-            console.log(`Getting location for ${loc.latitude} - ${loc.longitude} at ${currentTime()}`)
-            const up = new Date(GetSunRise(loc)).getTime()
-            const down = new Date(GetSunSet(loc)).getTime();
-            console.log(`Got lat/long + suntime: \nsunrise: ${up} - sunset: ${down}`);
-            currentTime() < up || currentTime() > down ? ApplyCSS(NIGHT_MODE_CSS) : ApplyCSS(DAY_MODE_CSS)
-        })
-    }
-    //IIFE 
-    // (() => init())();
 }
