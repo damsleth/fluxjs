@@ -1,10 +1,37 @@
+var CJD;
+(function (CJD) {
+    var Flux;
+    (function (Flux) {
+        const DAY_MODE_CSS = "day.css";
+        const NIGHT_MODE_CSS = "night.css";
+        Flux.GetLocationSoft = () => fetch("//freegeoip.net/json/", { method: "GET" }).then(d => d.json().then(j => j));
+        Flux.GetSunRise = (loc) => new Date().sunrise(parseInt(loc.latitude), parseInt(loc.longitude));
+        Flux.GetSunSet = (loc) => new Date().sunset(parseInt(loc.latitude), parseInt(loc.longitude));
+        Flux.currentTime = () => new Date().getTime();
+        const ApplyCSS = (url) => {
+            const css = document.createElement("link");
+            css.rel = "stylesheet";
+            css.type = "text/css";
+            css.href = url;
+            document.head.appendChild(css);
+        };
+        Flux.init = () => {
+            Flux.GetLocationSoft().then((loc) => {
+                console.log(`Location: ${loc.latitude} - ${loc.longitude} at ${Flux.currentTime()}`);
+                console.log(`Current time: ${Flux.currentTime()}`);
+                const up = new Date(Flux.GetSunRise(loc)).getTime();
+                const down = new Date(Flux.GetSunSet(loc)).getTime();
+                console.log(`Sunrise: ${up}`);
+                console.log(`Sunset: ${down}`);
+                Flux.currentTime() < up || Flux.currentTime() > down ? ApplyCSS(NIGHT_MODE_CSS) : ApplyCSS(DAY_MODE_CSS);
+            });
+        };
+        (() => Flux.init())();
+    })(Flux = CJD.Flux || (CJD.Flux = {}));
+})(CJD || (CJD = {}));
 const DATE_DEGREES_PER_HOUR = (360 / 24);
-Date.prototype.sunrise = function (latitude, longitude, zenith) {
-    return this.sunriseSet(latitude, longitude, true, zenith);
-};
-Date.prototype.sunset = function (latitude, longitude, zenith) {
-    return this.sunriseSet(latitude, longitude, false, zenith);
-};
+Date.prototype.sunrise = function (latitude, longitude, zenith) { return this.sunriseSet(latitude, longitude, true, zenith); };
+Date.prototype.sunset = function (latitude, longitude, zenith) { return this.sunriseSet(latitude, longitude, false, zenith); };
 Date.prototype.sunriseSet = function (latitude, longitude, sunrise, zenith) {
     if (!zenith) {
         zenith = 90.8333;
@@ -44,52 +71,18 @@ Date.prototype.sunriseSet = function (latitude, longitude, sunrise, zenith) {
     const milli = midnight.getTime() + (time * 60 * 60 * 1000);
     return new Date(milli);
 };
-// Utility functions
 Date.prototype.getDayOfYear = function () {
     const onejan = new Date(this.getFullYear(), 0, 1).getTime();
     return Math.ceil((this.getTime() - onejan) / 86400000);
 };
-Math.degToRad = function (num) { return num * Math.PI / 180; };
-Math.radToDeg = function (radians) { return radians * 180.0 / Math.PI; };
-Math.sinDeg = function (deg) { return Math.sin(deg * 2.0 * Math.PI / 360.0); };
-Math.acosDeg = function (x) { return Math.acos(x) * 360.0 / (2 * Math.PI); };
-Math.asinDeg = function (x) { return Math.asin(x) * 360.0 / (2 * Math.PI); };
-Math.tanDeg = function (deg) { return Math.tan(deg * 2.0 * Math.PI / 360.0); };
-Math.cosDeg = function (deg) { return Math.cos(deg * 2.0 * Math.PI / 360.0); };
-Math.mod = function (a, b) {
+Math.degToRad = (num) => num * Math.PI / 180;
+Math.radToDeg = (radians) => radians * 180.0 / Math.PI;
+Math.sinDeg = (deg) => Math.sin(deg * 2.0 * Math.PI / 360.0);
+Math.acosDeg = (x) => Math.acos(x) * 360.0 / (2 * Math.PI);
+Math.asinDeg = (x) => Math.asin(x) * 360.0 / (2 * Math.PI);
+Math.tanDeg = (deg) => Math.tan(deg * 2.0 * Math.PI / 360.0);
+Math.cosDeg = (deg) => Math.cos(deg * 2.0 * Math.PI / 360.0);
+Math.mod = (a, b) => {
     let result = a % b;
-    if (result < 0) {
-        result += b;
-    }
-    return result;
+    return (result) < 0 ? result += b : result;
 };
-const DAY_MODE_CSS = "day.css";
-const NIGHT_MODE_CSS = "night.css";
-var CJD;
-(function (CJD) {
-    var Flux;
-    (function (Flux) {
-        Flux.GetLocationSoft = () => fetch("//freegeoip.net/json/", { method: "GET" }).then(d => d.json().then(j => j));
-        Flux.GetSunRise = (loc) => new Date().sunrise(parseInt(loc.latitude), parseInt(loc.longitude));
-        Flux.GetSunSet = (loc) => new Date().sunset(parseInt(loc.latitude), parseInt(loc.longitude));
-        const currentTime = () => new Date().getTime();
-        const ApplyCSS = (url) => {
-            const cssLink = document.createElement("link");
-            cssLink.rel = "stylesheet";
-            cssLink.type = "text/css";
-            cssLink.href = url;
-            document.head.appendChild(cssLink);
-        };
-        Flux.init = () => {
-            Flux.GetLocationSoft().then(function (loc) {
-                console.log(`Getting location for ${loc.latitude} - ${loc.longitude} at ${currentTime()}`);
-                const up = new Date(Flux.GetSunRise(loc)).getTime();
-                const down = new Date(Flux.GetSunSet(loc)).getTime();
-                console.log(`Got lat/long + suntime: \nsunrise: ${up} - sunset: ${down}`);
-                currentTime() < up || currentTime() > down ? ApplyCSS(NIGHT_MODE_CSS) : ApplyCSS(DAY_MODE_CSS);
-            });
-        };
-        //IIFE 
-        // (() => init())();
-    })(Flux = CJD.Flux || (CJD.Flux = {}));
-})(CJD || (CJD = {}));
